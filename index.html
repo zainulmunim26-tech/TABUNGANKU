@@ -1,0 +1,3844 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabungan Pro - Aplikasi Keuangan Modern</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="Tabungan Pro">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tabungan Pro">
+    <meta name="description" content="Aplikasi keuangan modern untuk mengelola tabungan dan keuangan pribadi">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#00FF9D">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#00FF9D">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icon-512.png">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icon-512.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icon-512.png">
+    <link rel="shortcut icon" href="icon-512.png">
+
+    <!-- External Resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Tema Neon Dark Futuristik */
+        :root {
+            --primary: #00FF9D;
+            --accent: #FF00E4;
+            --neutral-bg: #0A0A0A;
+            --neutral-text: #FFFFFF;
+            --error: #FF2E63;
+            --light-gray: #1A1A1A;
+            --card-bg: #121212;
+            --shadow: 0 2px 10px rgba(0, 255, 157, 0.3);
+            --neon-blue: #2D8CFF;
+            --neon-green: #00FF9D;
+            --dark-bg: #050A17;
+            --darker-bg: #02050F;
+            --soft-purple: #8A2BE2;
+            --soft-cyan: #00FFFF;
+            --soft-orange: #FFA500;
+            --mint: #98FB98;
+        }
+
+        /* Tema Lainnya */
+        .theme-soft-night {
+            --primary: #4A90E2;
+            --accent: #7B68EE;
+            --neutral-bg: #1A1A2E;
+            --card-bg: #16213E;
+            --shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+            --dark-bg: #0F3460;
+            --darker-bg: #1A1A2E;
+        }
+
+        .theme-ocean-glow {
+            --primary: #00D4FF;
+            --accent: #0099FF;
+            --neutral-bg: #001F3F;
+            --card-bg: #003366;
+            --shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+            --dark-bg: #001F3F;
+            --darker-bg: #003366;
+        }
+
+        .theme-sunset-warm {
+            --primary: #FF8C00;
+            --accent: #FF2E63;
+            --neutral-bg: #2C1810;
+            --card-bg: #4A2B1A;
+            --shadow: 0 2px 10px rgba(255, 140, 0, 0.3);
+            --dark-bg: #2C1810;
+            --darker-bg: #4A2B1A;
+        }
+
+        .theme-minimal-light {
+            --primary: #00C896;
+            --accent: #0088CC;
+            --neutral-bg: #F5F5F5;
+            --neutral-text: #333333;
+            --error: #FF5252;
+            --light-gray: #E0E0E0;
+            --card-bg: #FFFFFF;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --dark-bg: #F5F5F5;
+            --darker-bg: #E0E0E0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--neutral-bg);
+            color: var(--neutral-text);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Intro Screen Styles */
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(160deg, #0b0c10, #1f2833);
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .intro-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .coin-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
+            position: relative;
+            animation: pulseGlow 2s ease-in-out infinite, fadeIn 0.8s ease-out;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 40px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 1.5s both;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+            border-radius: 2px;
+            animation: loading 2s ease-in-out 1.5s forwards;
+        }
+
+        .intro-footer {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 2s both;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 157, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes loading {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* Enhanced Login Screen Styles */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(160deg, #0b0c10, #1f2833);
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .login-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .pin-input {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.3s;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+
+        .pin-input::-webkit-outer-spin-button,
+        .pin-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .pin-input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+        }
+
+        .pin-input.filled {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+        }
+
+        .login-btn {
+            width: 70%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.5s ease forwards 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 157, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .biometric-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .biometric-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .biometric-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .biometric-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+            transform: scale(1.05);
+        }
+
+        .biometric-success {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 30px;
+            border-radius: 10px;
+            color: var(--neon-green);
+            font-weight: 600;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .biometric-success.show {
+            opacity: 1;
+        }
+
+        .login-footer {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main App Styles */
+        .container {
+            max-width: 100%;
+            padding: 0 16px;
+        }
+
+        /* Enhanced Header Styles */
+        header {
+            background-color: rgba(18, 18, 18, 0.8);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.5s ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        .user-actions button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--neutral-text);
+            margin-left: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-actions button:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Enhanced Dashboard Styles */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .greeting {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .date-display {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 255, 157, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .balance-title {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 8px 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .balance-change {
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.2);
+        }
+
+        .summary-card.income {
+            border-left: 4px solid var(--primary);
+        }
+
+        .summary-card.expense {
+            border-left: 4px solid var(--error);
+        }
+
+        .summary-card-title {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .summary-card-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .recent-transactions {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .view-all:hover {
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--light-gray);
+            transition: transform 0.2s ease;
+        }
+        
+        .transaction-item:hover {
+            transform: translateX(5px);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .transaction-icon.income {
+            background-color: rgba(0, 255, 157, 0.1);
+            color: var(--primary);
+        }
+
+        .transaction-icon.expense {
+            background-color: rgba(255, 46, 99, 0.1);
+            color: var(--error);
+        }
+
+        .transaction-details h3 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .transaction-details p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .transaction-amount.income {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .transaction-amount.expense {
+            color: var(--error);
+            font-weight: 600;
+        }
+
+        /* Enhanced Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(18, 18, 18, 0.8);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.5s ease;
+        }
+        
+        .nav-indicator {
+            position: absolute;
+            top: -10px;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: left 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--neutral-text);
+            text-decoration: none;
+            flex: 1;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active i {
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        /* Main Content */
+        main {
+            padding-bottom: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page {
+            display: none;
+            padding: 16px 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Crypto-Style Chart Filters */
+        .chart-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .chart-filter {
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--neutral-text);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chart-filter.active {
+            background: var(--primary);
+            color: var(--neutral-bg);
+            border-color: var(--primary);
+        }
+
+        /* Enhanced FAB */
+        .fab-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 90;
+        }
+        
+        .fab {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 255, 157, 0.3);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 2;
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .fab-options {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .fab-options.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        .fab-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            color: var(--neutral-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .fab-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+        
+        .fab-option span {
+            position: absolute;
+            right: 60px;
+            background: var(--card-bg);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .fab-option:hover span {
+            opacity: 1;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 157, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 157, 0); }
+        }
+
+        /* NEW: Voice Greeting AI Indicator */
+        .voice-indicator {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            z-index: 90;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .voice-indicator.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .voice-indicator i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .voice-indicator.pulse i {
+            animation: voicePulse 1.5s infinite;
+        }
+
+        @keyframes voicePulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(0, 255, 157, 0.7);
+            }
+            50% {
+                transform: scale(1.2);
+                text-shadow: 0 0 15px rgba(0, 255, 157, 0.7);
+            }
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(0, 255, 157, 0.7);
+            }
+        }
+
+        /* NEW: Calendar Page Styles */
+        #calendar-page .calendar-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav-btn {
+            background: none;
+            border: none;
+            color: var(--neutral-text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .calendar-nav-btn:hover {
+            color: var(--primary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: 5px 0;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: rgba(0, 255, 157, 0.1);
+        }
+
+        .calendar-day.current {
+            background: var(--primary);
+            color: var(--neutral-bg);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        .calendar-day.has-transaction {
+            position: relative;
+        }
+
+        .calendar-day.has-transaction::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .calendar-today-btn {
+            width: 100%;
+            padding: 8px;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-today-btn:hover {
+            background: var(--primary);
+            color: var(--neutral-bg);
+        }
+
+        .calendar-transactions {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        /* NEW: Calculator Page Styles */
+        #calculator-page .calculator-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .calculator-title {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calculator-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .calculator-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--neutral-text);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .calculator-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .calculator-btn {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: var(--neutral-bg);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculator-btn:hover {
+            background: rgba(0, 255, 157, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .calculator-result {
+            padding: 15px;
+            background: rgba(0, 255, 157, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .calculator-result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .calculator-advanced {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .calculator-tabs {
+            display: flex;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .calculator-tab {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            color: var(--neutral-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .calculator-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .calculator-content {
+            display: none;
+        }
+
+        .calculator-content.active {
+            display: block;
+        }
+
+        /* NEW: Enhanced Reports Page */
+        #reports-page .analytics-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .analytics-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .analytics-card .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .analytics-card .label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .analytics-card.income .value {
+            color: var(--primary);
+        }
+
+        .analytics-card.expense .value {
+            color: var(--error);
+        }
+
+        .analytics-card.net .value {
+            color: var(--soft-cyan);
+        }
+
+        .analytics-card.savings .value {
+            color: var(--soft-purple);
+        }
+
+        #reports-page .chart-container {
+            margin-bottom: 20px;
+        }
+
+        #reports-page .chart-filters {
+            margin-bottom: 16px;
+        }
+
+        #reports-page .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .export-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .export-btn:hover {
+            background: rgba(0, 255, 157, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .export-btn.secondary {
+            background: var(--light-gray);
+        }
+
+        .export-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* NEW: Enhanced Profile Avatar Styles */
+        .profile-avatar {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-right: 16px;
+        }
+
+        .profile-icon-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-icon {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 157, 0.7),
+                0 0 30px rgba(255, 0, 228, 0.5),
+                inset 0 0 15px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .profile-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            animation: holographic-shine 4s infinite;
+            z-index: 3;
+        }
+
+        .profile-icon::after {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            background: rgba(10, 10, 10, 0.7);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .icon-symbol {
+            position: relative;
+            z-index: 4;
+            color: white;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 157, 0.7));
+        }
+
+        .glow-effect {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(0, 255, 157, 0.3) 0%, 
+                rgba(255, 0, 228, 0.2) 30%, 
+                transparent 70%);
+            z-index: 1;
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        .inner-glow {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                transparent 40%);
+            z-index: 2;
+        }
+
+        @keyframes holographic-shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            20% {
+                transform: translateX(100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
+
+        .profile-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            box-shadow: 0 0 10px rgba(255, 0, 228, 0.5);
+            z-index: 5;
+        }
+
+        /* Enhanced Profile Page */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .profile-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .profile-action-btn {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: var(--neutral-text);
+        }
+
+        .profile-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 157, 0.3);
+        }
+
+        .profile-action-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .profile-action-btn span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Enhanced Settings Page */
+        .settings-list {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .settings-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .settings-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item i {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--light-gray);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Enhanced Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: backdrop-filter 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--neutral-text);
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--neutral-text);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--neutral-text);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: rgba(0, 255, 157, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--neutral-text);
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Enhanced Goals Page */
+        .goals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .goal-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .goal-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .goal-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .goal-amount {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .goal-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Enhanced Reports Page */
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--neutral-text);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        /* Theme Selector Modal */
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .theme-option {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .theme-option:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary);
+        }
+
+        .theme-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+        }
+
+        .theme-neon-dark .theme-preview {
+            background: linear-gradient(135deg, #00FF9D, #FF00E4);
+        }
+
+        .theme-soft-night .theme-preview {
+            background: linear-gradient(135deg, #4A90E2, #7B68EE);
+        }
+
+        .theme-ocean-glow .theme-preview {
+            background: linear-gradient(135deg, #00D4FF, #0099FF);
+        }
+
+        .theme-sunset-warm .theme-preview {
+            background: linear-gradient(135deg, #FF8C00, #FF2E63);
+        }
+
+        .theme-minimal-light .theme-preview {
+            background: linear-gradient(135deg, #00C896, #0088CC);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Install Button Styles */
+        .install-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,255,157,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,255,157,0.4);
+        }
+
+        /* Responsive improvements */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+                margin: 0 auto;
+            }
+            
+            .summary-cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .profile-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .dashboard-header {
+                flex-wrap: nowrap;
+            }
+            
+            .analytics-overview {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Responsive adjustments for login */
+        @media (max-width: 480px) {
+            .pin-input {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .coin-logo {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+            
+            .logo-text {
+                font-size: 1.7rem;
+            }
+            
+            .calculator-inputs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="theme-neon-dark">
+    <!-- Intro Screen -->
+    <div class="intro-container" id="intro-screen">
+        <div class="coin-logo">
+            <i class="fas fa-coins"></i>
+        </div>
+        <h1 class="logo-text">Tabungan Pro</h1>
+        <p class="tagline">Simpan, Kelola, Capai.</p>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="intro-footer">
+            © 2025 Tabungan Pro
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div class="login-container hidden" id="login-screen">
+        <div class="logo-container">
+            <div class="coin-logo">
+                <i class="fas fa-coins"></i>
+            </div>
+            <h1 class="logo-text">Tabungan Pro</h1>
+            <p class="login-subtitle">Masukkan PIN untuk masuk</p>
+        </div>
+        
+        <div class="pin-container">
+            <input type="number" inputmode="numeric" maxlength="1" class="pin-input" id="pin-1">
+            <input type="number" inputmode="numeric" maxlength="1" class="pin-input" id="pin-2">
+            <input type="number" inputmode="numeric" maxlength="1" class="pin-input" id="pin-3">
+            <input type="number" inputmode="numeric" maxlength="1" class="pin-input" id="pin-4">
+        </div>
+        
+        <button class="login-btn" id="submit-pin">Masuk</button>
+        
+        <div class="biometric-options">
+            <button class="biometric-btn" id="fingerprint-btn">
+                <i class="fas fa-fingerprint"></i>
+            </button>
+            <button class="biometric-btn" id="face-recognition-btn">
+                <i class="fas fa-face-recognition"></i>
+            </button>
+        </div>
+        
+        <div class="login-footer">
+            © 2025 Tabungan Pro — Simpan, Kelola, Capai.
+        </div>
+    </div>
+
+    <!-- Biometric Success Message -->
+    <div class="biometric-success" id="biometric-success">
+        <i class="fas fa-check-circle"></i>
+        Autentikasi berhasil ✅
+    </div>
+
+    <!-- NEW: Voice Greeting Indicator -->
+    <div class="voice-indicator" id="voice-indicator">
+        <i class="fas fa-volume-up"></i>
+    </div>
+
+    <!-- Main App (hidden initially) -->
+    <div id="app" class="hidden">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">Tabungan Pro</div>
+                <div class="user-actions">
+                    <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <button id="profile-btn"><i class="fas fa-user"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="container">
+                    <div class="dashboard-header">
+                        <div>
+                            <div class="greeting" id="greeting-text">Selamat Datang!</div>
+                            <div class="date-display" id="current-date">Senin, 12 Juni 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="balance-card">
+                        <div class="balance-title">Saldo Total</div>
+                        <div class="balance-amount">Rp 50.000</div>
+                        <div class="balance-change">
+                            <span>+ Rp 20.000 bulan ini</span>
+                            <span>↑ 12.5%</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-cards">
+                        <div class="summary-card income">
+                            <div class="summary-card-title">Pemasukan</div>
+                            <div class="summary-card-amount">Rp 50.000</div>
+                        </div>
+                        <div class="summary-card expense">
+                            <div class="summary-card-title">Pengeluaran</div>
+                            <div class="summary-card-amount">Rp 75.000</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-title">Tabungan</div>
+                            <div class="summary-card-amount">Rp 10.000</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-title">Investasi</div>
+                            <div class="summary-card-amount">Rp 50.000</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Aktivitas Keuangan</div>
+                        <div class="chart-filters">
+                            <button class="chart-filter active" data-period="week">Minggu Ini</button>
+                            <button class="chart-filter" data-period="month">Bulan Ini</button>
+                            <button class="chart-filter" data-period="year">Tahun Ini</button>
+                        </div>
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+
+                    <div class="recent-transactions">
+                        <div class="section-title">
+                            <h2>Transaksi Terbaru</h2>
+                            <a href="#" class="view-all" data-page="transactions-page">Lihat Semua</a>
+                        </div>
+                        <div class="transaction-list" id="recent-transactions">
+                            <!-- Transaction items will be added here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW: Calendar Page -->
+            <div id="calendar-page" class="page">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Kalender Keuangan</h2>
+                    </div>
+                    
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <div class="calendar-title" id="calendar-month">Juni 2023</div>
+                            <div class="calendar-nav">
+                                <button class="calendar-nav-btn" id="calendar-prev">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="calendar-nav-btn" id="calendar-next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid" id="calendar-days">
+                            <!-- Calendar days will be populated by JavaScript -->
+                        </div>
+                        <button class="calendar-today-btn" id="calendar-today">Hari Ini</button>
+                    </div>
+                    
+                    <div class="calendar-transactions">
+                        <div class="section-title">
+                            <h2>Transaksi Bulan Ini</h2>
+                        </div>
+                        <div class="transaction-list" id="calendar-transactions">
+                            <!-- Transaction items for selected month will be added here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW: Calculator Page -->
+            <div id="calculator-page" class="page">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Kalkulator Keuangan</h2>
+                    </div>
+                    
+                    <div class="calculator-container">
+                        <div class="calculator-title">
+                            <i class="fas fa-calculator"></i>
+                            Hitung Uang Manual
+                        </div>
+                        <div class="calculator-inputs">
+                            <input type="number" class="calculator-input" id="money-input" placeholder="Masukkan jumlah">
+                            <button class="calculator-btn" id="calculate-money">Hitung</button>
+                        </div>
+                        <div class="calculator-result" id="money-result"></div>
+                        
+                        <div class="calculator-advanced">
+                            <div class="calculator-tabs">
+                                <button class="calculator-tab active" data-tab="currency">Konversi Mata Uang</button>
+                                <button class="calculator-tab" data-tab="budget">Kalkulator Anggaran</button>
+                            </div>
+                            
+                            <div class="calculator-content active" id="currency-content">
+                                <div class="form-group">
+                                    <label class="form-label" for="currency-amount">Jumlah</label>
+                                    <input type="number" id="currency-amount" class="form-input" placeholder="Masukkan jumlah">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="currency-from">Dari</label>
+                                    <select class="form-select" id="currency-from">
+                                        <option value="IDR">IDR - Rupiah Indonesia</option>
+                                        <option value="USD">USD - Dolar Amerika</option>
+                                        <option value="EUR">EUR - Euro</option>
+                                        <option value="JPY">JPY - Yen Jepang</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="currency-to">Ke</label>
+                                    <select class="form-select" id="currency-to">
+                                        <option value="USD">USD - Dolar Amerika</option>
+                                        <option value="IDR">IDR - Rupiah Indonesia</option>
+                                        <option value="EUR">EUR - Euro</option>
+                                        <option value="JPY">JPY - Yen Jepang</option>
+                                    </select>
+                                </div>
+                                <button class="calculator-btn" id="convert-currency">Konversi</button>
+                                <div class="calculator-result" id="currency-result"></div>
+                            </div>
+                            
+                            <div class="calculator-content" id="budget-content">
+                                <div class="form-group">
+                                    <label class="form-label" for="budget-income">Pendapatan Bulanan</label>
+                                    <input type="number" id="budget-income" class="form-input" placeholder="Masukkan pendapatan">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="budget-expenses">Pengeluaran Tetap</label>
+                                    <input type="number" id="budget-expenses" class="form-input" placeholder="Masukkan pengeluaran">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="budget-savings">Target Tabungan (%)</label>
+                                    <input type="number" id="budget-savings" class="form-input" placeholder="Contoh: 20" min="0" max="100">
+                                </div>
+                                <button class="calculator-btn" id="calculate-budget">Hitung Anggaran</button>
+                                <div class="calculator-result" id="budget-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile-page" class="page">
+                <div class="container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <div class="profile-icon-container">
+                                <div class="glow-effect"></div>
+                                <div class="profile-icon">
+                                    <div class="inner-glow"></div>
+                                    <div class="icon-symbol">$</div>
+                                </div>
+                            </div>
+                            <div class="profile-badge">Premium</div>
+                        </div>
+                        <div class="profile-info">
+                            <h1 id="profile-name">Zain</h1>
+                            <p id="profile-welcome">Senang melihatmu kembali.</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="stat-value">Rp 50.000</div>
+                            <div class="stat-label">Saldo Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Target</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Transaksi</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="profile-action-btn" id="profile-change-photo">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Ubah Foto</span>
+                        </button>
+                        <button class="profile-action-btn" id="profile-change-pin">
+                            <i class="fas fa-key"></i>
+                            <span>Ubah PIN</span>
+                        </button>
+                        <button class="profile-action-btn" id="profile-manage-account">
+                            <i class="fas fa-cog"></i>
+                            <span>Kelola Akun</span>
+                        </button>
+                        <button class="profile-action-btn" id="profile-change-theme">
+                            <i class="fas fa-palette"></i>
+                            <span>Ubah Tema</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Page -->
+            <div id="transactions-page" class="page">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Semua Transaksi</h2>
+                        <div class="filters">
+                            <select class="filter-select" id="transaction-filter">
+                                <option value="all">Semua</option>
+                                <option value="income">Pemasukan</option>
+                                <option value="expense">Pengeluaran</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="transaction-list" id="all-transactions">
+                        <!-- All transaction items will be added here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals Page -->
+            <div id="goals-page" class="page">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Target Tabungan</h2>
+                        <button class="export-btn" id="add-goal-btn">Tambah Target</button>
+                    </div>
+                    <div class="goals-list" id="goals-list">
+                        <!-- Goal cards will be added here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW: Enhanced Reports Page -->
+            <div id="reports-page" class="page">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Laporan Keuangan</h2>
+                        <div class="export-options">
+                            <button class="export-btn secondary" id="export-csv-btn">
+                                <i class="fas fa-file-csv"></i> Ekspor CSV
+                            </button>
+                            <button class="export-btn" id="export-pdf-btn">
+                                <i class="fas fa-file-pdf"></i> Ekspor PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-overview">
+                        <div class="analytics-card income">
+                            <div class="value">Rp 25.000</div>
+                            <div class="label">Total Pemasukan</div>
+                        </div>
+                        <div class="analytics-card expense">
+                            <div class="value">Rp 50.000</div>
+                            <div class="label">Total Pengeluaran</div>
+                        </div>
+                        <div class="analytics-card net">
+                            <div class="value">Rp 50.000</div>
+                            <div class="label">Laba Bersih</div>
+                        </div>
+                        <div class="analytics-card savings">
+                            <div class="value">30%</div>
+                            <div class="label">Rasio Tabungan</div>
+                        </div>
+                    </div>
+
+                    <div class="filters">
+                        <select class="filter-select" id="report-period">
+                            <option value="this-month">Bulan Ini</option>
+                            <option value="last-month">Bulan Lalu</option>
+                            <option value="last-3-months">3 Bulan Terakhir</option>
+                            <option value="this-year">Tahun Ini</option>
+                        </select>
+                        <select class="filter-select" id="report-type">
+                            <option value="expense">Pengeluaran</option>
+                            <option value="income">Pemasukan</option>
+                            <option value="both">Keduanya</option>
+                        </select>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Ringkasan Keuangan</div>
+                        <div class="chart-filters">
+                            <button class="chart-filter active" data-chart="bar">Batang</button>
+                            <button class="chart-filter" data-chart="line">Garis</button>
+                            <button class="chart-filter" data-chart="pie">Pie</button>
+                        </div>
+                        <canvas id="reportChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Distribusi Pengeluaran</div>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+
+                    <div class="recent-transactions mt-4">
+                        <div class="section-title">
+                            <h2>Transaksi Periode Ini</h2>
+                        </div>
+                        <div class="transaction-list" id="report-transactions">
+                            <!-- Transaction items for the report period will be added here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings-page" class="page">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Pengaturan</h2>
+                    </div>
+                    
+                    <div class="settings-list">
+                        <div class="settings-item">
+                            <span>Profil Saya</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Akun & Dompet</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Kategori</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Notifikasi</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Privasi & Keamanan</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Backup Data</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Bantuan & Dukungan</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="settings-item">
+                            <span>Tentang Aplikasi</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <!-- NEW: Voice Greeting Setting -->
+                        <div class="settings-item" id="voice-greeting-toggle">
+                            <span>Suara Sambutan</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="voice-greeting-checkbox" checked>
+                                <label for="voice-greeting-checkbox" class="toggle-slider"></label>
+                            </div>
+                        </div>
+                        <div class="settings-item" id="logout-btn">
+                            <span style="color: var(--error);">Keluar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Enhanced Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-indicator"></div>
+            <a href="#" class="nav-item active" data-page="dashboard-page">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-page="calendar-page">
+                <i class="fas fa-calendar"></i>
+                <span>Kalender</span>
+            </a>
+            <a href="#" class="nav-item" data-page="calculator-page">
+                <i class="fas fa-calculator"></i>
+                <span>Kalkulator</span>
+            </a>
+            <a href="#" class="nav-item" data-page="reports-page">
+                <i class="fas fa-chart-pie"></i>
+                <span>Laporan</span>
+            </a>
+            <a href="#" class="nav-item" data-page="profile-page">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </nav>
+
+        <!-- Enhanced FAB with Options -->
+        <div class="fab-container">
+            <div class="fab-options" id="fab-options">
+                <div class="fab-option" id="fab-income">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Tambah Pemasukan</span>
+                </div>
+                <div class="fab-option" id="fab-expense">
+                    <i class="fas fa-minus-circle"></i>
+                    <span>Tambah Pengeluaran</span>
+                </div>
+                <div class="fab-option" id="fab-transfer">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transfer Dana</span>
+                </div>
+                <div class="fab-option" id="fab-budget">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Atur Anggaran</span>
+                </div>
+            </div>
+            <div class="fab pulse" id="add-transaction-btn">
+                <i class="fas fa-plus" id="fab-icon"></i>
+            </div>
+        </div>
+
+        <!-- Transaction Form Modal -->
+        <div class="modal" id="transaction-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Tambah Transaksi</h2>
+                    <button class="close-modal" id="close-transaction-modal">&times;</button>
+                </div>
+                <form id="transaction-form">
+                    <div class="form-group">
+                        <label class="form-label" for="transaction-type">Jenis Transaksi</label>
+                        <select class="form-select" id="transaction-type" required>
+                            <option value="income">Pemasukan</option>
+                            <option value="expense">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="transaction-amount">Jumlah</label>
+                        <input type="number" id="transaction-amount" class="form-input" placeholder="Masukkan jumlah" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="transaction-category">Kategori</label>
+                        <select class="form-select" id="transaction-category" required>
+                            <option value="makanan">Makanan</option>
+                            <option value="transportasi">Transportasi</option>
+                            <option value="belanja">Belanja</option>
+                            <option value="hiburan">Hiburan</option>
+                            <option value="tagihan">Tagihan</option>
+                            <option value="gaji">Gaji</option>
+                            <option value="investasi">Investasi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="transaction-date">Tanggal</label>
+                        <input type="date" id="transaction-date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="transaction-note">Catatan (opsional)</label>
+                        <input type="text" id="transaction-note" class="form-input" placeholder="Tambahkan catatan">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-transaction">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Goal Form Modal -->
+        <div class="modal" id="goal-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Tambah Target Tabungan</h2>
+                    <button class="close-modal" id="close-goal-modal">&times;</button>
+                </div>
+                <form id="goal-form">
+                    <div class="form-group">
+                        <label class="form-label" for="goal-title">Nama Target</label>
+                        <input type="text" id="goal-title" class="form-input" placeholder="Contoh: Liburan ke Bali" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="goal-target">Target Jumlah</label>
+                        <input type="number" id="goal-target" class="form-input" placeholder="Masukkan target jumlah" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="goal-current">Jumlah Saat Ini</label>
+                        <input type="number" id="goal-current" class="form-input" placeholder="Masukkan jumlah saat ini">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="goal-deadline">Target Tanggal</label>
+                        <input type="date" id="goal-deadline" class="form-input" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-goal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change PIN Modal -->
+        <div class="modal" id="change-pin-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Ubah PIN</h2>
+                    <button class="close-modal" id="close-change-pin-modal">&times;</button>
+                </div>
+                <form id="change-pin-form">
+                    <div class="form-group">
+                        <label class="form-label" for="current-pin">PIN Saat Ini</label>
+                        <input type="password" id="current-pin" class="form-input" placeholder="Masukkan PIN saat ini" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="new-pin">PIN Baru</label>
+                        <input type="password" id="new-pin" class="form-input" placeholder="Masukkan PIN baru" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirm-pin">Konfirmasi PIN Baru</label>
+                        <input type="password" id="confirm-pin" class="form-input" placeholder="Konfirmasi PIN baru" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-change-pin">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Theme Selector Modal -->
+        <div class="modal" id="theme-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Pilih Tema</h2>
+                    <button class="close-modal" id="close-theme-modal">&times;</button>
+                </div>
+                <div class="theme-options">
+                    <div class="theme-option theme-neon-dark active" data-theme="theme-neon-dark">
+                        <div class="theme-preview"></div>
+                        <div>Neon Dark</div>
+                    </div>
+                    <div class="theme-option theme-soft-night" data-theme="theme-soft-night">
+                        <div class="theme-preview"></div>
+                        <div>Soft Night</div>
+                    </div>
+                    <div class="theme-option theme-ocean-glow" data-theme="theme-ocean-glow">
+                        <div class="theme-preview"></div>
+                        <div>Ocean Glow</div>
+                    </div>
+                    <div class="theme-option theme-sunset-warm" data-theme="theme-sunset-warm">
+                        <div class="theme-preview"></div>
+                        <div>Sunset Warm</div>
+                    </div>
+                    <div class="theme-option theme-minimal-light" data-theme="theme-minimal-light">
+                        <div class="theme-preview"></div>
+                        <div>Minimal Light</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // NEW: Voice Greeting AI Functionality
+        const voiceIndicator = document.getElementById('voice-indicator');
+        const voiceGreetingToggle = document.getElementById('voice-greeting-toggle');
+        const voiceGreetingCheckbox = document.getElementById('voice-greeting-checkbox');
+        
+        // Initialize voice greeting setting from localStorage
+        let voiceGreetingEnabled = localStorage.getItem('voiceGreetingEnabled') !== 'false';
+        voiceGreetingCheckbox.checked = voiceGreetingEnabled;
+        
+        // Function to play welcome voice
+        function playWelcomeVoice() {
+            if (!voiceGreetingEnabled) return;
+            
+            // Show voice indicator
+            voiceIndicator.classList.add('active', 'pulse');
+            
+            const msg = new SpeechSynthesisUtterance("Selamat datang di Tabungan Pro — simpan, kelola, dan capai tujuan keuanganmu!");
+            msg.lang = 'id-ID';
+            msg.pitch = 1;
+            msg.rate = 0.9; // Slightly slower for natural speech
+            msg.volume = 0.8;
+            
+            // Event when speech starts
+            msg.onstart = function() {
+                console.log('Voice greeting started');
+            };
+            
+            // Event when speech ends
+            msg.onend = function() {
+                console.log('Voice greeting ended');
+                // Hide voice indicator after a short delay
+                setTimeout(() => {
+                    voiceIndicator.classList.remove('active', 'pulse');
+                }, 1000);
+            };
+            
+            // Event when speech encounters an error
+            msg.onerror = function(event) {
+                console.error('Speech synthesis error:', event);
+                voiceIndicator.classList.remove('active', 'pulse');
+            };
+            
+            // Check if speech synthesis is supported
+            if ('speechSynthesis' in window) {
+                speechSynthesis.speak(msg);
+            } else {
+                console.warn('Speech synthesis not supported in this browser');
+                voiceIndicator.classList.remove('active', 'pulse');
+            }
+        }
+        
+        // Toggle voice greeting setting
+        voiceGreetingToggle.addEventListener('click', function() {
+            voiceGreetingEnabled = !voiceGreetingEnabled;
+            voiceGreetingCheckbox.checked = voiceGreetingEnabled;
+            localStorage.setItem('voiceGreetingEnabled', voiceGreetingEnabled);
+            
+            // Play test voice if enabled
+            if (voiceGreetingEnabled) {
+                const testMsg = new SpeechSynthesisUtterance("Suara sambutan diaktifkan");
+                testMsg.lang = 'id-ID';
+                testMsg.rate = 0.9;
+                testMsg.volume = 0.8;
+                
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.speak(testMsg);
+                }
+            }
+        });
+        
+        // Prevent checkbox from triggering the toggle twice
+        voiceGreetingCheckbox.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Sample data
+        const transactions = [
+            { id: 1, type: 'expense', amount: 10000, category: 'Makanan', date: '2023-06-15', note: 'beli mie' },
+            { id: 2, type: 'expense', amount: 10000, category: 'Transportasi', date: '2023-06-14', note: 'Bensin motor' },
+            { id: 3, type: 'income', amount: 50000, category: 'Gaji', date: '2023-06-10', note: 'Gaji hadroh' },
+            { id: 4, type: 'expense', amount: 20000, category: 'Belanja', date: '2023-06-08', note: 'Beli alat sekolah' },
+            { id: 5, type: 'expense', amount: 120000, category: 'Hiburan', date: '2023-06-05', note: 'beli pancing' }
+        ];
+
+        const goals = [
+            { id: 1, title: 'HP baru', target: 2000000, current: 35000, deadline: '2023-12-31' },
+            { id: 2, title: 'beli lampu LED kamar', target: 310000, current: 15000, deadline: '2023-11-30' }
+        ];
+
+        // DOM Elements
+        const introScreen = document.getElementById('intro-screen');
+        const loginScreen = document.getElementById('login-screen');
+        const app = document.getElementById('app');
+        const themeToggle = document.getElementById('theme-toggle');
+        const profileBtn = document.getElementById('profile-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        const pages = document.querySelectorAll('.page');
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        const addTransactionBtn = document.getElementById('add-transaction-btn');
+        const transactionModal = document.getElementById('transaction-modal');
+        const closeTransactionModal = document.getElementById('close-transaction-modal');
+        const cancelTransaction = document.getElementById('cancel-transaction');
+        const transactionForm = document.getElementById('transaction-form');
+        
+        const addGoalBtn = document.getElementById('add-goal-btn');
+        const goalModal = document.getElementById('goal-modal');
+        const closeGoalModal = document.getElementById('close-goal-modal');
+        const cancelGoal = document.getElementById('cancel-goal');
+        const goalForm = document.getElementById('goal-form');
+        
+        const recentTransactionsList = document.getElementById('recent-transactions');
+        const allTransactionsList = document.getElementById('all-transactions');
+        const reportTransactionsList = document.getElementById('report-transactions');
+        const goalsList = document.getElementById('goals-list');
+        
+        const transactionFilter = document.getElementById('transaction-filter');
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        const exportPdfBtn = document.getElementById('export-pdf-btn');
+        
+        // Quick action buttons
+        const profileChangePhoto = document.getElementById('profile-change-photo');
+        const profileChangePin = document.getElementById('profile-change-pin');
+        const profileManageAccount = document.getElementById('profile-manage-account');
+        const profileChangeTheme = document.getElementById('profile-change-theme');
+
+        // Enhanced FAB elements
+        const fabOptions = document.getElementById('fab-options');
+        const fabIcon = document.getElementById('fab-icon');
+        const fabIncome = document.getElementById('fab-income');
+        const fabExpense = document.getElementById('fab-expense');
+        const fabTransfer = document.getElementById('fab-transfer');
+        const fabBudget = document.getElementById('fab-budget');
+
+        // PIN Login functionality
+        const pinInputs = [
+            document.getElementById('pin-1'),
+            document.getElementById('pin-2'),
+            document.getElementById('pin-3'),
+            document.getElementById('pin-4')
+        ];
+
+        const submitPinBtn = document.getElementById('submit-pin');
+        const changePinModal = document.getElementById('change-pin-modal');
+        const closeChangePinModal = document.getElementById('close-change-pin-modal');
+        const cancelChangePin = document.getElementById('cancel-change-pin');
+        const changePinForm = document.getElementById('change-pin-form');
+
+        // Theme selector elements
+        const themeModal = document.getElementById('theme-modal');
+        const closeThemeModal = document.getElementById('close-theme-modal');
+        const themeOptions = document.querySelectorAll('.theme-option');
+
+        // Chart filter elements
+        const chartFilters = document.querySelectorAll('.chart-filter');
+
+        // NEW: Biometric authentication elements
+        const fingerprintBtn = document.getElementById('fingerprint-btn');
+        const faceRecognitionBtn = document.getElementById('face-recognition-btn');
+        const biometricSuccess = document.getElementById('biometric-success');
+
+        // NEW: Calendar elements
+        const calendarMonth = document.getElementById('calendar-month');
+        const calendarDays = document.getElementById('calendar-days');
+        const calendarPrev = document.getElementById('calendar-prev');
+        const calendarNext = document.getElementById('calendar-next');
+        const calendarToday = document.getElementById('calendar-today');
+        const calendarTransactionsList = document.getElementById('calendar-transactions');
+
+        // NEW: Money calculator elements
+        const moneyInput = document.getElementById('money-input');
+        const calculateMoneyBtn = document.getElementById('calculate-money');
+        const moneyResult = document.getElementById('money-result');
+
+        // NEW: Advanced calculator elements
+        const calculatorTabs = document.querySelectorAll('.calculator-tab');
+        const calculatorContents = document.querySelectorAll('.calculator-content');
+        const currencyAmount = document.getElementById('currency-amount');
+        const currencyFrom = document.getElementById('currency-from');
+        const currencyTo = document.getElementById('currency-to');
+        const convertCurrencyBtn = document.getElementById('convert-currency');
+        const currencyResult = document.getElementById('currency-result');
+        const budgetIncome = document.getElementById('budget-income');
+        const budgetExpenses = document.getElementById('budget-expenses');
+        const budgetSavings = document.getElementById('budget-savings');
+        const calculateBudgetBtn = document.getElementById('calculate-budget');
+        const budgetResult = document.getElementById('budget-result');
+
+        // NEW: Enhanced reports elements
+        const reportPeriod = document.getElementById('report-period');
+        const reportType = document.getElementById('report-type');
+        const reportChartFilters = document.querySelectorAll('#reports-page .chart-filter');
+
+        // Set default PIN (in a real app, this would be set by the user)
+        const DEFAULT_PIN = '1234';
+        let currentPin = '';
+
+        // NEW: Calendar state
+        let currentCalendarDate = new Date();
+        let currentCalendarMonth = currentCalendarDate.getMonth();
+        let currentCalendarYear = currentCalendarDate.getFullYear();
+
+        // NEW: PWA Installation
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.className = 'install-btn';
+        installButton.style.display = 'none';
+
+        // Intro Screen Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setelah animasi intro selesai, tampilkan login screen
+            setTimeout(function() {
+                introScreen.classList.add('hidden');
+                loginScreen.classList.remove('hidden');
+                
+                // Auto-focus on first PIN input
+                pinInputs[0].focus();
+            }, 3500); // Durasi intro: 3.5 detik
+            
+            // Initialize calendar
+            initializeCalendar();
+            
+            // Set today's date as default for transaction form
+            document.getElementById('transaction-date').valueAsDate = new Date();
+            
+            // Set default deadline to 3 months from now for goal form
+            const futureDate = new Date();
+            futureDate.setMonth(futureDate.getMonth() + 3);
+            document.getElementById('goal-deadline').valueAsDate = futureDate;
+        });
+
+        // Enhanced Navigation Indicator
+        function updateNavigationIndicator() {
+            const activeItem = document.querySelector('.nav-item.active');
+            if (activeItem) {
+                const navIndicator = document.querySelector('.nav-indicator');
+                const itemRect = activeItem.getBoundingClientRect();
+                const navRect = document.querySelector('.bottom-nav').getBoundingClientRect();
+                
+                const left = itemRect.left - navRect.left + (itemRect.width / 2) - 25;
+                navIndicator.style.left = `${left}px`;
+            }
+        }
+
+        // Enhanced FAB functionality
+        addTransactionBtn.addEventListener('click', function() {
+            fabOptions.classList.toggle('active');
+            
+            if (fabOptions.classList.contains('active')) {
+                fabIcon.classList.remove('fa-plus');
+                fabIcon.classList.add('fa-times');
+            } else {
+                fabIcon.classList.remove('fa-times');
+                fabIcon.classList.add('fa-plus');
+            }
+        });
+
+        // FAB options functionality
+        fabIncome.addEventListener('click', function() {
+            document.getElementById('transaction-type').value = 'income';
+            transactionModal.classList.add('active');
+            fabOptions.classList.remove('active');
+            fabIcon.classList.remove('fa-times');
+            fabIcon.classList.add('fa-plus');
+        });
+
+        fabExpense.addEventListener('click', function() {
+            document.getElementById('transaction-type').value = 'expense';
+            transactionModal.classList.add('active');
+            fabOptions.classList.remove('active');
+            fabIcon.classList.remove('fa-times');
+            fabIcon.classList.add('fa-plus');
+        });
+
+        fabTransfer.addEventListener('click', function() {
+            alert('Fitur transfer akan segera hadir!');
+            fabOptions.classList.remove('active');
+            fabIcon.classList.remove('fa-times');
+            fabIcon.classList.add('fa-plus');
+        });
+
+        fabBudget.addEventListener('click', function() {
+            alert('Fitur anggaran akan segera hadir!');
+            fabOptions.classList.remove('active');
+            fabIcon.classList.remove('fa-times');
+            fabIcon.classList.add('fa-plus');
+        });
+
+        // PIN Login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle input navigation
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < pinInputs.length - 1) {
+                        pinInputs[index + 1].focus();
+                    }
+                    
+                    updatePinStatus();
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        pinInputs[index - 1].focus();
+                    }
+                });
+            });
+            
+            // Update PIN status and show/hide login button
+            function updatePinStatus() {
+                const allFilled = pinInputs.every(input => input.value.length === 1);
+                
+                pinInputs.forEach(input => {
+                    if (input.value.length === 1) {
+                        input.classList.add('filled');
+                    } else {
+                        input.classList.remove('filled');
+                    }
+                });
+                
+                if (allFilled) {
+                    submitPinBtn.style.display = 'block';
+                }
+            }
+            
+            // Handle login
+            submitPinBtn.addEventListener('click', function() {
+                const enteredPin = pinInputs.map(input => input.value).join('');
+                
+                // Simple PIN validation (in real app, this would check against stored PIN)
+                if (enteredPin.length === 4) {
+                    // Add success animation
+                    this.style.background = 'linear-gradient(135deg, #00CC88, #00AA66)';
+                    this.textContent = 'Berhasil!';
+                    
+                    setTimeout(() => {
+                        loginScreen.classList.add('hidden');
+                        app.classList.remove('hidden');
+                        renderTransactions();
+                        renderGoals();
+                        initializeCharts();
+                        updateNavigationIndicator();
+                        updateGreeting();
+                        
+                        // NEW: Play welcome voice after successful login
+                        setTimeout(() => {
+                            playWelcomeVoice();
+                        }, 500);
+                    }, 1000);
+                }
+            });
+        });
+
+        // NEW: Biometric authentication
+        fingerprintBtn.addEventListener('click', function() {
+            biometricSuccess.classList.add('show');
+            
+            setTimeout(() => {
+                biometricSuccess.classList.remove('show');
+                
+                // Simulate successful authentication
+                setTimeout(() => {
+                    loginScreen.classList.add('hidden');
+                    app.classList.remove('hidden');
+                    renderTransactions();
+                    renderGoals();
+                    initializeCharts();
+                    updateNavigationIndicator();
+                    updateGreeting();
+                    
+                    // NEW: Play welcome voice after successful biometric login
+                    setTimeout(() => {
+                        playWelcomeVoice();
+                    }, 500);
+                }, 500);
+            }, 1500);
+        });
+
+        faceRecognitionBtn.addEventListener('click', function() {
+            biometricSuccess.classList.add('show');
+            
+            setTimeout(() => {
+                biometricSuccess.classList.remove('show');
+                
+                // Simulate successful authentication
+                setTimeout(() => {
+                    loginScreen.classList.add('hidden');
+                    app.classList.remove('hidden');
+                    renderTransactions();
+                    renderGoals();
+                    initializeCharts();
+                    updateNavigationIndicator();
+                    updateGreeting();
+                    
+                    // NEW: Play welcome voice after successful biometric login
+                    setTimeout(() => {
+                        playWelcomeVoice();
+                    }, 500);
+                }, 500);
+            }, 1500);
+        });
+
+        // NEW: Money calculator
+        calculateMoneyBtn.addEventListener('click', function() {
+            const amount = parseFloat(moneyInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Masukkan jumlah uang yang valid!');
+                return;
+            }
+            
+            const formattedAmount = formatCurrency(amount);
+            moneyResult.textContent = `Rp ${formattedAmount}`;
+            moneyResult.classList.add('show');
+            
+            // Reset input
+            moneyInput.value = '';
+        });
+
+        // NEW: Advanced calculator tabs
+        calculatorTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Update active tab
+                calculatorTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding content
+                calculatorContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `${tabId}-content`) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // NEW: Currency conversion
+        convertCurrencyBtn.addEventListener('click', function() {
+            const amount = parseFloat(currencyAmount.value);
+            const fromCurrency = currencyFrom.value;
+            const toCurrency = currencyTo.value;
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Masukkan jumlah yang valid!');
+                return;
+            }
+            
+            // In a real app, you would fetch real exchange rates from an API
+            // For now, we'll use mock exchange rates
+            const exchangeRates = {
+                'IDR': { 'USD': 0.000065, 'EUR': 0.000061, 'JPY': 0.0097, 'IDR': 1 },
+                'USD': { 'IDR': 15350, 'EUR': 0.94, 'JPY': 149, 'USD': 1 },
+                'EUR': { 'IDR': 16300, 'USD': 1.06, 'JPY': 158, 'EUR': 1 },
+                'JPY': { 'IDR': 103, 'USD': 0.0067, 'EUR': 0.0063, 'JPY': 1 }
+            };
+            
+            const rate = exchangeRates[fromCurrency][toCurrency];
+            const convertedAmount = amount * rate;
+            
+            let formattedAmount;
+            if (toCurrency === 'IDR') {
+                formattedAmount = formatCurrency(convertedAmount);
+            } else {
+                formattedAmount = convertedAmount.toFixed(2);
+            }
+            
+            currencyResult.textContent = `${amount} ${fromCurrency} = ${formattedAmount} ${toCurrency}`;
+            currencyResult.classList.add('show');
+        });
+
+        // NEW: Budget calculator
+        calculateBudgetBtn.addEventListener('click', function() {
+            const income = parseFloat(budgetIncome.value);
+            const expenses = parseFloat(budgetExpenses.value);
+            const savingsPercent = parseFloat(budgetSavings.value);
+            
+            if (isNaN(income) || income <= 0) {
+                alert('Masukkan pendapatan yang valid!');
+                return;
+            }
+            
+            if (isNaN(expenses) || expenses < 0) {
+                alert('Masukkan pengeluaran yang valid!');
+                return;
+            }
+            
+            if (isNaN(savingsPercent) || savingsPercent < 0 || savingsPercent > 100) {
+                alert('Masukkan persentase tabungan yang valid (0-100)!');
+                return;
+            }
+            
+            const savingsAmount = (income * savingsPercent) / 100;
+            const discretionarySpending = income - expenses - savingsAmount;
+            
+            let resultHTML = `
+                <div style="text-align: left;">
+                    <div style="margin-bottom: 8px;">Pendapatan: <strong>Rp ${formatCurrency(income)}</strong></div>
+                    <div style="margin-bottom: 8px;">Pengeluaran Tetap: <strong>Rp ${formatCurrency(expenses)}</strong></div>
+                    <div style="margin-bottom: 8px;">Tabungan (${savingsPercent}%): <strong>Rp ${formatCurrency(savingsAmount)}</strong></div>
+                    <div style="margin-bottom: 8px;">Pengeluaran Discretionary: <strong>Rp ${formatCurrency(discretionarySpending)}</strong></div>
+                </div>
+            `;
+            
+            budgetResult.innerHTML = resultHTML;
+            budgetResult.classList.add('show');
+        });
+
+        // NEW: Calendar functionality
+        function initializeCalendar() {
+            updateCalendar();
+            
+            calendarPrev.addEventListener('click', function() {
+                currentCalendarMonth--;
+                if (currentCalendarMonth < 0) {
+                    currentCalendarMonth = 11;
+                    currentCalendarYear--;
+                }
+                updateCalendar();
+            });
+            
+            calendarNext.addEventListener('click', function() {
+                currentCalendarMonth++;
+                if (currentCalendarMonth > 11) {
+                    currentCalendarMonth = 0;
+                    currentCalendarYear++;
+                }
+                updateCalendar();
+            });
+            
+            calendarToday.addEventListener('click', function() {
+                currentCalendarDate = new Date();
+                currentCalendarMonth = currentCalendarDate.getMonth();
+                currentCalendarYear = currentCalendarDate.getFullYear();
+                updateCalendar();
+            });
+        }
+        
+        function updateCalendar() {
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                               "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            
+            calendarMonth.textContent = `${monthNames[currentCalendarMonth]} ${currentCalendarYear}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1);
+            const lastDay = new Date(currentCalendarYear, currentCalendarMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+            
+            // Clear calendar
+            calendarDays.innerHTML = '';
+            
+            // Add day headers
+            const dayNames = ["M", "S", "S", "R", "K", "J", "S"];
+            dayNames.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day-header';
+                dayElement.textContent = day;
+                calendarDays.appendChild(dayElement);
+            });
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < startingDay; i++) {
+                const emptyElement = document.createElement('div');
+                emptyElement.className = 'calendar-day';
+                calendarDays.appendChild(emptyElement);
+            }
+            
+            // Add days of the month
+            const today = new Date();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                // Check if this day has transactions
+                const hasTransaction = transactions.some(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    return transactionDate.getDate() === i && 
+                           transactionDate.getMonth() === currentCalendarMonth && 
+                           transactionDate.getFullYear() === currentCalendarYear;
+                });
+                
+                if (hasTransaction) {
+                    dayElement.classList.add('has-transaction');
+                }
+                
+                // Highlight current day
+                if (i === today.getDate() && 
+                    currentCalendarMonth === today.getMonth() && 
+                    currentCalendarYear === today.getFullYear()) {
+                    dayElement.classList.add('current');
+                }
+                
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Update transactions for the selected month
+            updateCalendarTransactions();
+        }
+        
+        function updateCalendarTransactions() {
+            if (!calendarTransactionsList) return;
+            
+            calendarTransactionsList.innerHTML = '';
+            
+            const monthTransactions = transactions.filter(transaction => {
+                const transactionDate = new Date(transaction.date);
+                return transactionDate.getMonth() === currentCalendarMonth && 
+                       transactionDate.getFullYear() === currentCalendarYear;
+            });
+            
+            if (monthTransactions.length === 0) {
+                calendarTransactionsList.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px 0;">Tidak ada transaksi bulan ini</p>';
+                return;
+            }
+            
+            monthTransactions.forEach(transaction => {
+                const transactionElement = createTransactionElement(transaction);
+                calendarTransactionsList.appendChild(transactionElement);
+            });
+        }
+
+        // Change PIN functionality
+        profileChangePin.addEventListener('click', function() {
+            changePinModal.classList.add('active');
+        });
+
+        closeChangePinModal.addEventListener('click', function() {
+            changePinModal.classList.remove('active');
+        });
+
+        cancelChangePin.addEventListener('click', function() {
+            changePinModal.classList.remove('active');
+        });
+
+        changePinForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPinInput = document.getElementById('current-pin').value;
+            const newPin = document.getElementById('new-pin').value;
+            const confirmPin = document.getElementById('confirm-pin').value;
+            
+            if (currentPinInput !== DEFAULT_PIN) {
+                alert('PIN saat ini salah!');
+                return;
+            }
+            
+            if (newPin.length !== 4) {
+                alert('PIN baru harus 4 digit!');
+                return;
+            }
+            
+            if (newPin !== confirmPin) {
+                alert('Konfirmasi PIN tidak cocok!');
+                return;
+            }
+            
+            // In a real app, you would save the new PIN
+            alert('PIN berhasil diubah!');
+            changePinModal.classList.remove('active');
+            changePinForm.reset();
+        });
+
+        // Update greeting based on time of day
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            let greeting = "Selamat Malam";
+            
+            if (hour < 12) greeting = "Selamat Pagi";
+            else if (hour < 15) greeting = "Selamat Siang";
+            else if (hour < 18) greeting = "Selamat Sore";
+            
+            document.getElementById('greeting-text').textContent = `${greeting}, Zain 👋`;
+            
+            // Update current date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('id-ID', options);
+        }
+
+        // Theme functionality
+        themeToggle.addEventListener('click', function() {
+            // Cycle through themes
+            const themes = ['theme-neon-dark', 'theme-soft-night', 'theme-ocean-glow', 'theme-sunset-warm', 'theme-minimal-light'];
+            const currentTheme = document.body.className;
+            const currentIndex = themes.indexOf(currentTheme);
+            const nextIndex = (currentIndex + 1) % themes.length;
+            
+            changeTheme(themes[nextIndex]);
+        });
+
+        profileChangeTheme.addEventListener('click', function() {
+            themeModal.classList.add('active');
+        });
+
+        closeThemeModal.addEventListener('click', function() {
+            themeModal.classList.remove('active');
+        });
+
+        themeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const theme = this.getAttribute('data-theme');
+                changeTheme(theme);
+                
+                // Update active state
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                themeModal.classList.remove('active');
+            });
+        });
+
+        function changeTheme(themeName) {
+            document.body.className = themeName;
+            localStorage.setItem('theme', themeName);
+            
+            // Update theme toggle icon
+            const icon = themeToggle.querySelector('i');
+            if (themeName === 'theme-minimal-light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            changeTheme(savedTheme);
+        }
+
+        // Profile button functionality
+        profileBtn.addEventListener('click', function() {
+            // Update active nav item
+            navItems.forEach(nav => nav.classList.remove('active'));
+            document.querySelector('.nav-item[data-page="profile-page"]').classList.add('active');
+            
+            // Show profile page
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById('profile-page').classList.add('active');
+            
+            updateNavigationIndicator();
+        });
+
+        logoutBtn.addEventListener('click', function() {
+            app.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            
+            // Reset PIN inputs
+            pinInputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
+            submitPinBtn.textContent = 'Masuk';
+            submitPinBtn.style.background = 'linear-gradient(135deg, var(--primary), var(--accent))';
+            
+            // Reset focus to first PIN input
+            pinInputs[0].focus();
+        });
+
+        // Navigation
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetPage = this.getAttribute('data-page');
+                
+                // Update active nav item
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show target page
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(targetPage).classList.add('active');
+                
+                updateNavigationIndicator();
+            });
+        });
+
+        // Profile Action Buttons
+        profileChangePhoto.addEventListener('click', function() {
+            alert('Fitur ubah foto profil akan segera hadir!');
+        });
+
+        profileManageAccount.addEventListener('click', function() {
+            // Navigate to settings page
+            navItems.forEach(nav => nav.classList.remove('active'));
+            document.querySelector('.nav-item[data-page="settings-page"]').classList.add('active');
+            
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById('settings-page').classList.add('active');
+            
+            updateNavigationIndicator();
+        });
+
+        // Transaction Modal
+        closeTransactionModal.addEventListener('click', function() {
+            transactionModal.classList.remove('active');
+        });
+
+        cancelTransaction.addEventListener('click', function() {
+            transactionModal.classList.remove('active');
+        });
+
+        transactionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('transaction-type').value;
+            const amount = parseInt(document.getElementById('transaction-amount').value);
+            const category = document.getElementById('transaction-category').value;
+            const date = document.getElementById('transaction-date').value;
+            const note = document.getElementById('transaction-note').value;
+            
+            // Add new transaction (in a real app, this would be saved to a database)
+            const newTransaction = {
+                id: transactions.length + 1,
+                type,
+                amount,
+                category,
+                date,
+                note: note || category
+            };
+            
+            transactions.unshift(newTransaction);
+            renderTransactions();
+            updateCalendarTransactions();
+            transactionModal.classList.remove('active');
+            transactionForm.reset();
+            
+            // Show success message
+            alert('Transaksi berhasil ditambahkan!');
+        });
+
+        // Goal Modal
+        closeGoalModal.addEventListener('click', function() {
+            goalModal.classList.remove('active');
+        });
+
+        cancelGoal.addEventListener('click', function() {
+            goalModal.classList.remove('active');
+        });
+
+        goalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('goal-title').value;
+            const target = parseInt(document.getElementById('goal-target').value);
+            const current = parseInt(document.getElementById('goal-current').value) || 0;
+            const deadline = document.getElementById('goal-deadline').value;
+            
+            // Add new goal (in a real app, this would be saved to a database)
+            const newGoal = {
+                id: goals.length + 1,
+                title,
+                target,
+                current,
+                deadline
+            };
+            
+            goals.push(newGoal);
+            renderGoals();
+            goalModal.classList.remove('active');
+            goalForm.reset();
+            
+            // Show success message
+            alert('Target tabungan berhasil ditambahkan!');
+        });
+
+        // Transaction Filter
+        if (transactionFilter) {
+            transactionFilter.addEventListener('change', function() {
+                renderTransactions();
+            });
+        }
+
+        // Chart Filters
+        chartFilters.forEach(filter => {
+            filter.addEventListener('click', function() {
+                chartFilters.forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+                
+                // In a real app, you would update the chart based on the selected period
+                const period = this.getAttribute('data-period');
+                updateChart(period);
+            });
+        });
+
+        // NEW: Report chart filters
+        if (reportChartFilters) {
+            reportChartFilters.forEach(filter => {
+                filter.addEventListener('click', function() {
+                    reportChartFilters.forEach(f => f.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, you would update the chart based on the selected type
+                    const chartType = this.getAttribute('data-chart');
+                    updateReportChart(chartType);
+                });
+            });
+        }
+
+        // NEW: Export buttons
+        exportCsvBtn.addEventListener('click', function() {
+            alert('Laporan berhasil diekspor sebagai CSV!');
+        });
+
+        exportPdfBtn.addEventListener('click', function() {
+            alert('Laporan berhasil diekspor sebagai PDF!');
+        });
+
+        function updateChart(period) {
+            // In a real app, you would fetch new data based on the period
+            // For now, we'll just log the period
+            console.log('Updating chart for period:', period);
+        }
+
+        function updateReportChart(chartType) {
+            // In a real app, you would update the chart type
+            console.log('Updating report chart to:', chartType);
+        }
+
+        // Render Transactions
+        function renderTransactions() {
+            const filter = transactionFilter ? transactionFilter.value : 'all';
+            let filteredTransactions = transactions;
+            
+            if (filter !== 'all') {
+                filteredTransactions = transactions.filter(t => t.type === filter);
+            }
+            
+            // Clear existing transactions
+            if (recentTransactionsList) {
+                recentTransactionsList.innerHTML = '';
+            }
+            if (allTransactionsList) {
+                allTransactionsList.innerHTML = '';
+            }
+            if (reportTransactionsList) {
+                reportTransactionsList.innerHTML = '';
+            }
+            
+            // Render recent transactions (last 5)
+            const recentToShow = filteredTransactions.slice(0, 5);
+            recentToShow.forEach(transaction => {
+                const transactionElement = createTransactionElement(transaction);
+                if (recentTransactionsList) {
+                    recentTransactionsList.appendChild(transactionElement);
+                }
+                if (reportTransactionsList) {
+                    reportTransactionsList.appendChild(transactionElement.cloneNode(true));
+                }
+            });
+            
+            // Render all transactions
+            filteredTransactions.forEach(transaction => {
+                const transactionElement = createTransactionElement(transaction);
+                if (allTransactionsList) {
+                    allTransactionsList.appendChild(transactionElement);
+                }
+            });
+        }
+
+        function createTransactionElement(transaction) {
+            const transactionItem = document.createElement('div');
+            transactionItem.className = 'transaction-item fade-in';
+            
+            const transactionInfo = document.createElement('div');
+            transactionInfo.className = 'transaction-info';
+            
+            const transactionIcon = document.createElement('div');
+            transactionIcon.className = `transaction-icon ${transaction.type}`;
+            transactionIcon.innerHTML = `<i class="fas ${transaction.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>`;
+            
+            const transactionDetails = document.createElement('div');
+            transactionDetails.className = 'transaction-details';
+            
+            const transactionName = document.createElement('h3');
+            transactionName.textContent = transaction.note;
+            
+            const transactionMeta = document.createElement('p');
+            transactionMeta.textContent = `${transaction.category} • ${formatDate(transaction.date)}`;
+            
+            transactionDetails.appendChild(transactionName);
+            transactionDetails.appendChild(transactionMeta);
+            
+            transactionInfo.appendChild(transactionIcon);
+            transactionInfo.appendChild(transactionDetails);
+            
+            const transactionAmount = document.createElement('div');
+            transactionAmount.className = `transaction-amount ${transaction.type}`;
+            transactionAmount.textContent = `${transaction.type === 'income' ? '+' : '-'} Rp ${formatCurrency(transaction.amount)}`;
+            
+            transactionItem.appendChild(transactionInfo);
+            transactionItem.appendChild(transactionAmount);
+            
+            return transactionItem;
+        }
+
+        // Render Goals
+        function renderGoals() {
+            if (!goalsList) return;
+            
+            goalsList.innerHTML = '';
+            
+            goals.forEach(goal => {
+                const goalCard = document.createElement('div');
+                goalCard.className = 'goal-card fade-in';
+                
+                const goalHeader = document.createElement('div');
+                goalHeader.className = 'goal-header';
+                
+                const goalTitle = document.createElement('div');
+                goalTitle.className = 'goal-title';
+                goalTitle.textContent = goal.title;
+                
+                const goalAmount = document.createElement('div');
+                goalAmount.className = 'goal-amount';
+                goalAmount.textContent = `Rp ${formatCurrency(goal.current)} / Rp ${formatCurrency(goal.target)}`;
+                
+                goalHeader.appendChild(goalTitle);
+                goalHeader.appendChild(goalAmount);
+                
+                // Add badge for completed goals
+                const progressPercentage = Math.min((goal.current / goal.target) * 100, 100);
+                if (progressPercentage >= 100) {
+                    const goalBadge = document.createElement('div');
+                    goalBadge.className = 'goal-badge';
+                    goalBadge.textContent = 'Tercapai!';
+                    goalCard.appendChild(goalBadge);
+                }
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                
+                const progressFill = document.createElement('div');
+                progressFill.className = 'progress-fill';
+                progressFill.style.width = `${progressPercentage}%`;
+                
+                progressBar.appendChild(progressFill);
+                
+                const goalDetails = document.createElement('div');
+                goalDetails.className = 'goal-details';
+                
+                const progressText = document.createElement('span');
+                progressText.textContent = `${Math.round(progressPercentage)}% tercapai`;
+                
+                const deadlineText = document.createElement('span');
+                deadlineText.textContent = formatDate(goal.deadline);
+                
+                goalDetails.appendChild(progressText);
+                goalDetails.appendChild(deadlineText);
+                
+                goalCard.appendChild(goalHeader);
+                goalCard.appendChild(progressBar);
+                goalCard.appendChild(goalDetails);
+                
+                goalsList.appendChild(goalCard);
+            });
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Expense Chart
+            const expenseCtx = document.getElementById('expenseChart');
+            if (expenseCtx) {
+                new Chart(expenseCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
+                        datasets: [{
+                            label: 'Pengeluaran',
+                            data: [65, 59, 80, 81, 56, 55, 40, 57, 76, 60, 70, 65, 75, 80, 85],
+                            borderColor: '#00FF9D',
+                            backgroundColor: 'rgba(0, 255, 157, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Report Chart
+            const reportCtx = document.getElementById('reportChart');
+            if (reportCtx) {
+                new Chart(reportCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                        datasets: [
+                            {
+                                label: 'Pemasukan',
+                                data: [32000, 35000, 40000, 38000, 42000, 35000],
+                                backgroundColor: '#00FF9D'
+                            },
+                            {
+                                label: 'Pengeluaran',
+                                data: [28000, 30000, 32000, 29000, 31000, 25000],
+                                backgroundColor: '#FF2E63'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart');
+            if (categoryCtx) {
+                new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Makanan', 'Transportasi', 'Belanja', 'Hiburan', 'Tagihan', 'Lainnya'],
+                        datasets: [{
+                            data: [25, 20, 15, 10, 20, 10],
+                            backgroundColor: [
+                                '#00FF9D',
+                                '#FF2E63',
+                                '#2D8CFF',
+                                '#FFA500',
+                                '#8A2BE2',
+                                '#00FFFF'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Utility Functions
+        function formatCurrency(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'short' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // NEW: PWA Installation Logic
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA install prompt triggered');
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Show install button
+            showInstallPromotion();
+        });
+
+        // App installed event
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA was installed');
+            // Hide the install button
+            hideInstallPromotion();
+            
+            // Clear the deferredPrompt so it can be garbage collected
+            deferredPrompt = null;
+            
+            // Show success message
+            showInstallSuccess();
+        });
+
+        function showInstallPromotion() {
+            // Create and show install button
+            installButton.textContent = 'Install App';
+            installButton.style.display = 'block';
+            
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    deferredPrompt = null;
+                    hideInstallPromotion();
+                }
+            });
+            
+            document.body.appendChild(installButton);
+        }
+
+        function hideInstallPromotion() {
+            installButton.style.display = 'none';
+        }
+
+        function showInstallSuccess() {
+            const successMsg = document.createElement('div');
+            successMsg.textContent = 'Aplikasi berhasil diinstall! 🎉';
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--primary);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 10px;
+                z-index: 1000;
+                box-shadow: 0 2px 10px rgba(0,255,157,0.3);
+            `;
+            
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                if (successMsg.parentNode) {
+                    successMsg.parentNode.removeChild(successMsg);
+                }
+            }, 3000);
+        }
+
+        // Check if app is running as PWA
+        function isRunningAsPWA() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone ||
+                   document.referrer.includes('android-app://');
+        }
+
+        // Jika aplikasi berjalan sebagai PWA, sembunyikan browser UI elements
+        if (isRunningAsPWA()) {
+            console.log('App is running as PWA');
+            document.documentElement.style.setProperty('--safe-area-top', 'env(safe-area-inset-top)');
+            document.documentElement.style.setProperty('--safe-area-bottom', 'env(safe-area-inset-bottom)');
+        }
+
+        // NEW: Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                  .then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                      const newWorker = registration.installing;
+                      console.log('Service Worker update found!', newWorker);
+                    });
+                  })
+                  .catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                  });
+              });
+              
+              // Listen for claiming control
+              navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('Service Worker controller changed');
+              });
+        }
+    </script>
+</body>
+</html>
